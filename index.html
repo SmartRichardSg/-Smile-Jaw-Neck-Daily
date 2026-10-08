@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#4CAF50">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Smile & Jaw & Neck Daily</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f3f7f4;color:#233}
+header{background:linear-gradient(135deg,#4caf50,#1687d9);color:#fff;padding:22px 12px;text-align:center}
+header h1{margin:0;font-size:24px}header p{margin:6px 0 0;font-size:14px}
+.container{max-width:620px;margin:auto;padding:14px}.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tab{flex:1;border:0;border-radius:12px;padding:12px 4px;font-weight:700;background:#e4e9e6;color:#345}.tab.active{background:#4caf50;color:#fff}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 3px 12px #00000010}h2{margin:0 0 12px;color:#245}
+.duration{display:flex;gap:7px;flex-wrap:wrap}.duration button,.btn{border:0;border-radius:10px;padding:11px 13px;font-weight:700;cursor:pointer}
+.duration button{background:#edf0ee}.duration button.active{background:#4caf50;color:#fff}.btn{width:100%;background:#4caf50;color:#fff;font-size:16px;margin-top:12px}
+.exercise{text-align:center}.emoji{font-size:64px;margin:5px}.name{font-size:22px;font-weight:800}.desc{color:#667;line-height:1.45}
+.timer{font-size:50px;font-weight:800;color:#1687d9;text-align:center;margin:10px}.progress{height:9px;background:#e5e5e5;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:#4caf50;transition:width .3s}
+.controls{display:flex;gap:8px}.controls .btn{margin-top:10px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stat{background:#eef7f0;border-radius:12px;padding:12px}.stat b{display:block;font-size:24px;color:#1687d9}.history{max-height:240px;overflow:auto}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee}.note{font-size:12px;color:#667;background:#fff8dc;padding:10px;border-radius:10px;margin-top:10px}.hidden{display:none}
+</style>
+</head>
+<body>
+<header><h1>😊 Smile & Jaw & Neck Daily</h1><p>Simple daily exercises • Choose your time • Track your progress</p></header>
+<div class="container">
+<div class="tabs">
+<button class="tab active" onclick="showTab('smile',this)">😊 Smile</button>
+<button class="tab" onclick="showTab('jaw',this)">😁 Jaw</button>
+<button class="tab" onclick="showTab('neck',this)">🧘 Neck</button>
+<button class="tab" onclick="showTab('track',this)">📊 Track</button>
+</div>
+
+<section id="smile">
+<div class="card"><h2>Choose duration</h2><div class="duration" id="smileDur"></div><button class="btn" onclick="start('smile')">▶ Start Smile Exercise</button></div>
+<div class="card exercise"><div class="emoji">😊</div><div class="name">Smile Routine</div><div class="desc">Gentle facial and smile exercises designed for a relaxed daily routine.</div></div>
+</section>
+
+<section id="jaw" class="hidden">
+<div class="card"><h2>Choose duration</h2><div class="duration" id="jawDur"></div><button class="btn" onclick="start('jaw')">▶ Start Jaw Exercise</button></div>
+<div class="card exercise"><div class="emoji">😁</div><div class="name">Jaw Routine</div><div class="desc">Gentle jaw relaxation and mobility. Never force the movement or clench your teeth.</div></div>
+</section>
+
+<section id="neck" class="hidden">
+<div class="card"><h2>Choose duration</h2><div class="duration" id="neckDur"></div><button class="btn" onclick="start('neck')">▶ Start Neck Exercise</button></div>
+<div class="card exercise"><div class="emoji">🧘</div><div class="name">Neck Routine</div><div class="desc">Slow, comfortable neck movements with relaxed shoulders.</div></div>
+</section>
+
+<section id="track" class="hidden">
+<div class="card"><h2>Today's progress</h2><div class="stats">
+<div class="stat"><b id="todayMin">0</b>minutes</div><div class="stat"><b id="sessions">0</b>sessions</div><div class="stat"><b id="streak">0</b>day streak</div>
+</div></div>
+<div class="card"><h2>History</h2><div class="history" id="history"></div></div>
+</section>
+
+<div id="player" class="card hidden">
+<div class="exercise"><div class="emoji" id="exEmoji">😊</div><div class="name" id="exName"></div><div class="desc" id="exDesc"></div>
+<div class="timer" id="timer">00:00</div><div class="progress"><i id="bar"></i></div>
+<div class="controls"><button class="btn" onclick="pause()" id="pauseBtn">Ⅱ Pause</button><button class="btn" onclick="skip()">Next ▶</button></div>
+<button class="btn" onclick="stop()">■ Stop</button></div>
+</div>
+<div class="note">Safety: Keep movements gentle. Stop if you feel pain, dizziness, numbness, tingling or unusual discomfort. This app is for general exercise guidance, not medical treatment.</div>
+</div>
+
+<script>
+const smile=[
+["😊","Big Smile","Smile comfortably and hold. Relax your face afterwards."],
+["🙂","Gentle Smile","Make a relaxed natural smile. Hold without straining."],
+["😄","Cheek Lift","Lift the corners of your mouth gently and relax."],
+["😌","Smile Relax","Smile softly, then completely relax your face."],
+["😊","Repeat Smile","Repeat a comfortable smile with slow breathing."]
+];
+const jaw=[
+["😁","Gentle Jaw Open","Slowly open your mouth a comfortable amount, then gently close."],
+["🙂","Jaw Relax","Let your jaw hang loosely for a few seconds, then return to neutral."],
+["↔️","Jaw Side Glide","Move the lower jaw gently left and right without forcing it."],
+["👄","Lip & Jaw Relax","Keep lips soft and teeth slightly apart. Breathe slowly."],
+["😌","Jaw Release","Relax the jaw, cheeks and temples before the next repetition."]
+];
+const neck=[
+["🧘","Chin Tuck","Sit tall. Gently draw your chin backward. Do not look down."],
+["↔️","Side Tilt","Gently tilt your head toward one shoulder. Keep shoulders relaxed."],
+["🔄","Neck Turn","Slowly turn your head left, then right, only within a comfortable range."],
+["⬆️","Look Up","Gently look slightly upward. Do not force the movement."],
+["😌","Neck Relax","Return to neutral and breathe slowly with relaxed shoulders."]
+];
+let current=null,idx=0,remaining=0,total=0,timerId=null,paused=false;
+let durations={smile:10,jaw:10,neck:10};
+
+function makeDur(id){document.getElementById(id).innerHTML=[5,10,15,20].map((n,i)=>`<button class="${i===1?'active':''}" onclick="setDur('${id.replace('Dur','')}',${n},this)">${n} min</button>`).join('')+`<button onclick="customDur('${id.replace('Dur','')}')">Custom</button>`}
+makeDur('smileDur');makeDur('jawDur');makeDur('neckDur');
+function setDur(type,n,b){durations[type]=n;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}
+function customDur(type){let n=prompt("Enter minutes (1–60):",durations[type]);n=Number(n);if(n>=1&&n<=60)durations[type]=n}
+function showTab(id,b){document.querySelectorAll('section').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='track')renderTrack()}
+function start(type){current=type;idx=0;total=durations[type]*60;remaining=total;paused=false;player.classList.remove('hidden');player.scrollIntoView({behavior:'smooth'});renderExercise();clearInterval(timerId);timerId=setInterval(tick,1000)}
+function renderExercise(){let list=current==='smile'?smile:(current==='jaw'?jaw:neck);let a=list[idx%list.length];exEmoji.textContent=a[0];exName.textContent=a[1];exDesc.textContent=a[2];updateTimer()}
+function tick(){if(paused)return;remaining--;updateTimer();if(remaining<=0)finish()}
+function updateTimer(){let m=Math.floor(remaining/60),s=remaining%60;timer.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;bar.style.width=((total-remaining)/total*100)+'%'}
+function pause(){paused=!paused;pauseBtn.textContent=paused?'▶ Resume':'Ⅱ Pause'}
+function skip(){idx++;renderExercise()}
+function stop(){clearInterval(timerId);player.classList.add('hidden')}
+function finish(){clearInterval(timerId);saveSession(current,durations[current]);alert("Great job! Session completed. 😊");player.classList.add('hidden');renderTrack()}
+function saveSession(type,min){let d=JSON.parse(localStorage.getItem('smileNeckHistory')||'{}'),date=new Date().toISOString().slice(0,10);if(!d[date])d[date]={minutes:0,sessions:0,smile:0,jaw:0,neck:0};d[date].minutes+=min;d[date].sessions++;d[date][type]+=min;localStorage.setItem('smileNeckHistory',JSON.stringify(d))}
+function renderTrack(){let d=JSON.parse(localStorage.getItem('smileNeckHistory')||'{}'),today=new Date().toISOString().slice(0,10),x=d[today]||{minutes:0,sessions:0};todayMin.textContent=x.minutes;sessions.textContent=x.sessions;streak.textContent=getStreak(d);let keys=Object.keys(d).sort().reverse();history.innerHTML=keys.length?keys.map(k=>`<div class="row"><span>${k}</span><b>${d[k].minutes} min · ${d[k].sessions} session${d[k].sessions>1?'s':''}</b></div>`).join(''):'No sessions yet.'}
+function getStreak(d){let n=0,day=new Date();while(true){let k=day.toISOString().slice(0,10);if(!d[k])break;n++;day.setDate(day.getDate()-1)}return n}
+renderTrack();
+</script>
+</body>
+</html>
